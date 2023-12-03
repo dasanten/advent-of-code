@@ -1,0 +1,86 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'cell.dart';
+
+void main(List<String> args) {
+  final inputFile = File("./day-03/input.txt");
+  final input = inputFile.readAsStringSync();
+  final inputList = LineSplitter.split(input);
+
+  final grid = <List<Cell>>[];
+
+  inputList.forEach((element) {
+    final row = <Cell>[];
+    element.split('').forEach((element) {
+      row.add(Cell(element));
+    });
+    grid.add(row);
+  });
+
+  var sum = 0;
+
+  for (var y = 0; y < grid.length; y++) {
+    final row = grid[y];
+    for (var x = 0; x < row.length; x++) {
+      final cell = row[x];
+      if (cell.isMultiplying) {
+        sum += gearRatio(grid, x: x, y: y);
+      }
+    }
+  }
+
+  print(sum);
+}
+
+int gearRatio(List<List<Cell>> grid, {required int x, required int y}) {
+  final startIndex = x > 0 ? x - 1 : x;
+  final endIndex = x + 1 < grid.first.length ? x + 1 : x;
+  final startColumn = y > 0 ? y - 1 : y;
+  final endColumn = y + 1 < grid.length ? y + 1 : y;
+  final gears = <int>[];
+  for (var j = startColumn; j <= endColumn; j++) {
+    var usedCords = <int>[];
+    for (var i = startIndex; i <= endIndex; i++) {
+      final cell = grid[j][i];
+      if (usedCords.any((element) => element == i)) continue;
+      if (cell.isNumber) {
+        final res = getWholeNumber(grid[j], x: i);
+        usedCords = res["includedCords"];
+        gears.add(res["ratio"]);
+      }
+    }
+  }
+  var ratio = 0;
+  if (gears.length == 2) {
+    ratio = gears.first * gears.last;
+  }
+
+  return ratio;
+}
+
+Map<String, dynamic> getWholeNumber(List<Cell> row, {required int x}) {
+  var number = "";
+  var numberCords = [];
+  for (var i = 0; i < row.length; i++) {
+    final cell = row[i];
+    if (cell.isNumber) {
+      number += cell.value;
+      numberCords.add(i);
+    }
+    if (numberCords.any((element) => element == x) &&
+        (!cell.isNumber || row.length - 1 == i)) {
+      final ratio = int.parse(number);
+      final includedNumbers =
+          List.generate(ratio.toString().length, (index) => i - index);
+      return {
+        'ratio': ratio,
+        'includedCords': includedNumbers,
+      };
+    }
+    if (!cell.isNumber) {
+      number = "";
+    }
+  }
+  return {};
+}
