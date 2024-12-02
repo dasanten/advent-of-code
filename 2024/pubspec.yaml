@@ -1,0 +1,7 @@
+name: day_01
+
+environment: 
+  sdk: '^3.1.0'
+
+dependencies:
+  intl: ^0.17.0
