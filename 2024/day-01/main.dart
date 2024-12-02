@@ -4,7 +4,7 @@ import 'dart:io';
 import '../utils.dart';
 
 void main(List<String> args) {
-  final inputFile = File("./day-01/input.txt");
+  final inputFile = File("./day-01/test.txt");
   final input = inputFile.readAsStringSync();
   final inputList = LineSplitter.split(input);
   final leftList = <int>[];
