@@ -7,8 +7,8 @@ void main(List<String> args) {
   final inputFile = File("./day-01/input.txt");
   final input = inputFile.readAsStringSync();
   final inputList = LineSplitter.split(input);
-  final leftList = [];
-  final rightList = [];
+  final leftList = <int>[];
+  final rightList = <int>[];
   
   inputList.forEach((row) {
     final numbers = row.split('   ');
@@ -16,11 +16,19 @@ void main(List<String> args) {
     rightList.add(int.parse(numbers.last));
   },);
 
-  leftList.sort();
-  rightList.sort();
-  print(leftList);
-  print(rightList);
+  final similarityScores = <int>[];
 
+  leftList.forEach((element) {
+    final instances = rightList.amount((rightListValue) => rightListValue == element,);
+    similarityScores.add(instances * element);
+  },); 
+
+  print(similarityScores.sum);
+
+}
+
+void part1(List<int> leftList, List<int> rightList) {
+  
   final distances = <int>[];
 
   for (var i = 0; i < leftList.length; i++) {
@@ -35,6 +43,4 @@ void main(List<String> args) {
 
   }
     print(distances.sum);
-
-
 }
