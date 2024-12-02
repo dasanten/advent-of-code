@@ -15,8 +15,21 @@ void main(List<String> args) {
     reports.add(numbers.map((e) => int.parse(e),).toList());
   },);
 
-  print(reports.amount((element) => isSave(element),));
+  print(reports.amount((element) => isSaveWithRemoving(element),));
 }
+
+bool isSaveWithRemoving(List<int> report) {
+  for (var i = 0; i < report.length; i++) {
+    final currentTry = List.of(report)..removeAt(i);
+    if (isSave(currentTry)) {
+      return true;
+    }
+  }
+
+
+  return false;
+}
+
 
 bool isSave(List<int> report) {
   bool increasing = report.first < report[1];
@@ -37,7 +50,7 @@ bool isSave(List<int> report) {
     }
     
     lastLevel = level;
-  }
+    }
 
 
   return true;
